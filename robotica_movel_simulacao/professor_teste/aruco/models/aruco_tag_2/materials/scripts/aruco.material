@@ -1,0 +1,15 @@
+material aruco/material_2
+{
+  receive_shadows off
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture tag_2.png
+        filtering anisotropic
+      }
+    }
+  }
+}

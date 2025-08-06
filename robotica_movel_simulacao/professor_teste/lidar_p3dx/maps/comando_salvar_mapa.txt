@@ -1,0 +1,1 @@
+rosrun map_server map_saver -f ~/catkin_ws/src/robotica_movel/professor_teste/lidar_p3dx/maps/corredor_map

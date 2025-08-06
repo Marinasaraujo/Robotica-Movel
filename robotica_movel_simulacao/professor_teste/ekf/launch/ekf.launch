@@ -1,0 +1,4 @@
+<launch>
+    <node pkg="ekf" type="ekf_fusion_node.py" name="ekf_node" output="screen"/>
+</launch>
+

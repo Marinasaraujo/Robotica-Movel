@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+    <!-- Argumentos para o mundo -->
+    <arg name="world_name" default="$(find professor_mundo)/worlds/mundo_corredor.world"/>
+    
+    <!-- Variável de ambiente para localizar modelos -->
+    <env name="GAZEBO_MODEL_PATH" value="$(find aruco)/models:$(find professor_mundo)/models" />
+    
+    <!-- Argumentos para o robô -->
+    <arg name="ns" default="p3dx"/>
+    <arg name="x" default="0.0"/>
+    <arg name="y" default="0.0"/>
+    <arg name="z" default="0.0"/>
+
+    <!-- Inicia o Gazebo com o mundo personalizado -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(arg world_name)"/>
+        <arg name="paused" value="false"/>
+        <arg name="use_sim_time" value="true"/>
+        <arg name="gui" value="false"/> <!-- Evita abrir o gzclient automaticamente -->
+    </include>
+
+    <!-- Carrega a descrição do robô no ROS Parameter Server antes de spawná-lo -->
+    <param name="/robot_description" command="$(find xacro)/xacro --inorder $(find p3dx_description)/urdf/pioneer3dx.xacro"/>
+
+    <!-- Spawna o robô no mundo corredor -->
+    <include file="$(find p3dx_gazebo)/launch/spawn.launch">
+        <arg name="name" value="$(arg ns)" />
+        <arg name="namespace_arg" value="$(arg ns)" />
+        <arg name="x" value="$(arg x)" />
+        <arg name="y" value="$(arg y)" />
+        <arg name="z" value="$(arg z)" />
+    </include>
+
+    <!-- Inicia o gzclient manualmente após o Gazebo estar rodando -->
+    <node name="gazebo_client" pkg="gazebo_ros" type="gzclient" output="screen"/>
+    
+    <!-- Inicia o teleop_twist-->
+    <include file="$(find p3dx_teleop)/launch/teleop.launch"/>
+
+</launch>

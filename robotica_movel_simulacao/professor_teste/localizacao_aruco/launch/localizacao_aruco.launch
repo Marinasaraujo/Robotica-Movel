@@ -1,0 +1,4 @@
+<launch>
+  <param name="use_sim_time" value="true"/>
+  <node pkg="localizacao_aruco" type="localizador_aruco.py" name="aruco_node" output="screen"/>
+</launch>

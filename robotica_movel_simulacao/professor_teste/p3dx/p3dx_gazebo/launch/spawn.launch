@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+    <!-- Argumentos para a posição e nome do robô -->
+    <arg name="x" default="0.0"/>
+    <arg name="y" default="0.0"/>
+    <arg name="z" default="0.0"/>
+    <arg name="name" default="p3dx"/>
+    <arg name="namespace_arg" default=""/>
+
+    <!-- Caminho para o modelo do robô -->
+    <arg name="robot_model" default="$(find p3dx_description)/urdf/pioneer3dx.xacro"/>
+
+    <!-- Carrega o modelo URDF no ROS Parameter Server -->
+    <param name="/robot_description" command="$(find xacro)/xacro --inorder '$(arg robot_model)'" />
+
+    <!-- Spawna o robô no Gazebo -->
+    <node name="spawn_robot" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" 
+          args="-urdf 
+                -unpause 
+                -param /robot_description 
+                -model $(arg name) 
+                -robot_namespace $(arg namespace_arg) 
+                -x $(arg x) 
+                -y $(arg y) 
+                -z $(arg z)" />
+   <!-- só camera             
+   <node name="spawn_sdf" pkg="gazebo_ros" type="spawn_model" output="screen"
+         args="-sdf
+               -file $(find p3dx_description)/urdf/pioneer3dxCam.sdf
+               -model $(arg name)
+               -x $(arg x) 
+               -y $(arg y) 
+               -z $(arg z)" /> -->
+
+    <!-- Inclui o controle do robô -->
+    <include file="$(find p3dx_control)/launch/control.launch">
+        <arg name="name" value="$(arg namespace_arg)" />
+        <arg name="x" value="$(arg x)" />
+        <arg name="y" value="$(arg y)" />
+        <arg name="namespace_arg" value="$(arg namespace_arg)" />
+        <arg name="tfprefix" value="$(arg namespace_arg)_tf"/>
+    </include>
+
+</launch>
+
